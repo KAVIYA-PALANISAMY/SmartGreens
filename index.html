@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartGreens</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        
+        /* Modal Styles */
+        .modal-content {
+    width: 90%; /* Adjust as needed */
+    max-width: 600px; /* Limit width for better visuals */
+    position: relative;
+    margin: auto;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #888;
+            max-height: 80vh; /* Maximum height for the modal content */
+            overflow-y: auto; /* Enables scrolling if content overflows */
+        }
+
+        .close-btn {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            background-color: darkred;
+        }
+
+        /* Additional styling for modal content */
+        .modal h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"], button[type="button"] {
+            padding: 10px 15px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover, button[type="button"]:hover {
+            background-color: darkblue;
+        }
+
+        .form-toggle {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .form-toggle a {
+            color: blue;
+            cursor: pointer;
+        }
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header .logo h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        nav ul li button {
+            background-color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        nav ul li button:hover {
+            background-color: #ccc;
+        }
+
+        .hero {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin: 10px 0;
+        }
+
+        .hero input {
+            padding: 10px;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .category-buttons {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.category-box {
+    display: inline-block;
+    background-color: #4CAF50; /* Bright green background */
+    color: white;
+    border: none;
+    padding: 20px 50px; /* Adjusted padding for better proportions */
+    margin: 15px;
+    font-size: 1.6rem; /* Slightly larger text for impact */
+    cursor: pointer;
+    border-radius: 12px; /* Slightly more rounded corners */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    font-family: 'Arial', sans-serif; /* Modern, clean font */
+}
+
+.category-box:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+    transform: translateY(-5px); /* Slight upward motion on hover */
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+}
+
+.category-box:active {
+    transform: translateY(0px); /* Reset transform when button is clicked */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Original shadow when active */
+}
+
+.category-box:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0px 0px 0px 3px rgba(76, 175, 80, 0.5); /* Green outline on focus for accessibility */
+}
+
+
+        .product-list {
+            padding: 40px 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .product-list h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .products {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .product {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .product img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product h4 {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .product p {
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .add-to-cart {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .add-to-cart:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+/* --------------------------------------------------- */
+/* Modal Styles */
+/* Modal Styles */
+.modal {
+    color: black; /* Text color for the modal */
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.6); /* Transparent background */
+    padding-top: 60px;
+    animation: fadeIn 0.5s ease-out; /* Fade-in animation for the modal */
+}
+
+/* Modal content styles */
+.modal-content {
+    background: linear-gradient(to bottom, #d3d8d3, #66bb6a); 
+    color: black; /* Ensure the modal content text is black */
+    margin: 5% auto;
+    padding: 30px;
+    border: 2px solid #388e3c; /* Green border */
+    width: 80%; /* Adjust size */
+    text-align: center;
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    animation: slideIn 0.5s ease-in-out; /* Sliding in animation */
+}
+
+/* Heading styles */
+.modal-content h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: black; /* Ensure heading is black */
+}
+
+/* Paragraph styles */
+.modal-content p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: black; /* Ensure paragraphs are black */
+}
+
+/* Button styles */
+.modal-content button {
+    background-color: #388e3c; /* Green background */
+    color: black; /* Button text color */
+    padding: 12px 24px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 45%; /* Button width */
+    margin-top: 20px;
+}
+
+.modal-content button:hover {
+    background-color: #2c6b2f; /* Darker green on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+}
+
+
+/* Slide-in animation */
+@keyframes slideIn {
+    from {
+        transform: translateY(-50%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Fade-in background animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Close button (X) */
+.close {
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #f44336;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Step title */
+h2 {
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Step description */
+p {
+    font-size: 18px;
+    color: white;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+/* Highlight text (important info) */
+.highlight {
+    color: #2e7d32; /* Dark green */
+    font-weight: bold;
+}
+
+
+
+
+/* Style for the Skip Walkthrough button */
+#skipButton {
+    background-color: #f44336; /* Red for the skip button */
+}
+
+#skipButton:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+/* Styling for step-by-step modal transitions */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%; /* Reduce width for smaller screens */
+    }
+
+  
+}
+.price {
+    font-size: 1rem; /* Adjust font size as needed */
+    color: #333;    /* Ensure the text color contrasts with the background */
+    margin: 8px 0;  /* Add space around the price */
+    font-weight: bold;
+    text-align: center; /* Center align the price text */
+}
+.category-buttons {
+            margin-bottom: 20px;
+        }
+        .category-box {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .cart-summary {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .cart-summary h3 {
+            margin-bottom: 10px;
+        }
+
+        .cart-summary p {
+            margin: 5px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .cart-summary ul {
+            padding: 0;
+            list-style: none;
+            margin-bottom: 10px;
+        }
+
+        .cart-summary li {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .product {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            display: inline-block;
+            width: 200px;
+        }
+
+        .product img {
+            width: 100%;
+            height: auto;
+        }
+
+        .product .price {
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .quantity-container {
+            margin: 5px 0;
+        }
+
+        .add-to-cart {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-to-cart:hover {
+            background-color: #45a049;
+        }
+         /* Popup Styles */
+         .popup {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 128, 0, 0.9);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            text-align: center;
+            font-size: 16px;
+            animation: fadeInOut 3s forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            10%, 90% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+        .container {
+    margin: 20px auto;
+    padding: 50px; /* Increased padding to create more space between content and container edges */
+    width: 95%; /* Increased container width */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+        h1, h2 {
+            text-align: center;
+            color: #28a745;
+        }
+
+        .about-text {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-top: 20px;
+            color: black;
+        }
+
+        .about-text p {
+            margin-bottom: 20px;
+        }
+        .entry{
+            color:black;
+        }
+        .en{
+            color:white;
+        }
+        .views{
+            color: black;
+            font-size: 25px;
+        font-weight: bold;
+             line-height: 1.6;
+             text-align: center;
+             font-family: 'Times New Roman', Times, serif;
+            
+             margin: 10px 0;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="walkthroughModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeWalkthrough()">&times;</span>
+            <h2 id="stepTitle">Welcome to Smart Grocery!</h2>
+            <p id="stepDescription">Let's start with a brief walkthrough of how to use the site.</p>
+            <div class="buttons">
+                <button id="nextButton" onclick="nextStep()">Next Step</button>
+                <button id="skipButton" onclick="skipWalkthrough()">Skip Walkthrough</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Bar -->
+    <div class="nav">
+        <button id="lists-btn">Home</button>
+        <button id="home-btn" class="active" onclick="navigateToManageList()">Manage list</button>
+        <button id="view-cart-button" onclick="navigateToView()">View Cart</button>
+       <button id="settings-btn" onclick="navigateToReward()">View Rewards</button>
+        <button id="settings-btn" onclick="navigateToMore()">More</button>
+        <button id="settings-btn" onclick="navigateToContact()">Contact</button>
+        <button id="register" onclick="navigateToRegisterForm()">Register/Log in</button>
+        <button id="logout-btn" style="display: none;" onclick="logout()">Log Out</button>
+        <button class="dark-mode-toggle" id="dark-mode-toggle">Dark Mode</button>
+        
+    </div>
+    <section class="hero">
+        <h2 class="en">Welcome to SmartGreens! </h2>
+        <p>Sit back, relax and let us take care of it <br>Have your groceries delivered at any time</p>
+        <input type="text" id="search" placeholder="Search for groceries...">
+        
+    </section>
+  
+      <!-- Cart Summary
+      <section class="cart-summary">
+        <h3>Cart Summary</h3>
+        <p id="cart-count">Items in Cart: 0</p>
+        <p id="cart-total">Total: ₹0</p>
+        <ul id="cart-items-list"></ul>
+    </section> -->
+    <div class="container">
+        <h1>About Us</h1>
+        <h2>Who We Are</h2>
+        <div class="about-text">
+            <p class="entry">
+                We are an innovative online platform dedicated to making your grocery shopping experience easier, smarter, and more affordable. With our intuitive interface, you can manage your grocery lists, plan your shopping, and stay within your budget. Our mission is to help you save time and money by offering personalized shopping recommendations and keeping track of your expenses with ease. Whether you're shopping for everyday essentials or searching for specific items, we’ve got you covered.
+            </p>
+        
+            <p class="entry">
+                At SmartGreens, we specialize in offering a curated selection of the highest-quality dairy, vegetables, and snacks that cater to all your culinary needs. Our mission is simple: to provide fresh, healthy, and sustainable products directly to your doorstep, ensuring that you and your family enjoy the best ingredients for every meal.
+            </p>
+        
+            <h3>What We Offer:</h3>
+            <ul>
+                <li><strong>Dairy:</strong> From creamy milk to indulgent cheeses, fresh yogurts, and butter, our dairy range is sourced from trusted local farms that prioritize quality and sustainability. We deliver only the freshest dairy products to your home, ensuring you get the best nature has to offer.</li>
+                <li><strong>Vegetables:</strong> SmartGreens is your go-to place for fresh, organic, and locally-sourced vegetables. Whether you're cooking up a quick salad or preparing a hearty meal, our wide variety of vegetables—ranging from leafy greens to root vegetables—are handpicked for their flavor and nutritional value.</li>
+                <li><strong>Snacks:</strong> We understand that snacking is an important part of your daily routine. That’s why we offer a wide selection of healthy, tasty, and indulgent snacks, from crispy chips to nuts, dried fruits, and other treats that are perfect for every craving.</li>
+            </ul>
+        
+            <h3>Why Choose SmartGreens?</h3>
+            <ul>
+                <li><strong>Fresh and Local:</strong> We prioritize sourcing directly from local farmers and trusted suppliers, ensuring that you receive the freshest products possible.</li>
+                <li><strong>Sustainable and Eco-Friendly:</strong> Our commitment to sustainability means eco-conscious packaging, minimal waste, and a focus on greener alternatives.</li>
+                <li><strong>Convenience:</strong> With SmartGreens, you can order all your essentials in one place and have them delivered straight to your door, saving you time and effort.</li>
+                <li><strong>Quality You Can Trust:</strong> Every product we offer goes through a strict quality check, ensuring that what you get is always fresh, healthy, and delicious.</li>
+            </ul>
+        
+            <p class="entry">
+                <strong>Our Vision:</strong> At SmartGreens, our vision is to make healthy living accessible to everyone through sustainable grocery options. We aim to build a healthier future by making smarter, greener choices for your home and the planet.
+            </p>
+        
+            <p class="entry">
+                Let SmartGreens bring the best of dairy, vegetables, and snacks to your kitchen, so you can focus on what really matters—your health and happiness!
+            </p>
+        </div>
+        
+            <br><br>
+            <h1><p class="views">Click below Categories To View Our Best-Selling Product – Loved by Thousands!</p></h1>
+
+    <!-- Category Boxes -->
+    <section class="category-buttons">
+        <button class="category-box" onclick="filterCategory('dairy')">Dairy</button>
+        <button class="category-box" onclick="filterCategory('vegetables')">Vegetables</button>
+        <button class="category-box" onclick="filterCategory('snacks')">Snacks</button>
+    </section>
+    <!-- Products List (Initially Hidden) -->
+    <section class="product-list">
+        <h3>Check Out Our New Arrivals – Fresh from the Store</h3>
+        <div class="products">
+            <!-- Dairy Products (25 Items) -->
+            <div class="product dairy">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD2r98xqYkFmm4BG1TkzJtYCAn_htyk8pN7g&s" alt="Product 1">
+                <h4>Milk</h4>
+                <p class="price">₹100</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPYaIcv-vkCgLm9EFS-uluCv8h9xz8dy4k1Hr-7mmEakZR0LKYI3QvoVBdYt6DRu0b5WQ&usqp=CAU" alt="Product 2">
+                <h4>Butter</h4>
+                <p class="price">₹189</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <!-- Repeat similar product divs for a total of 25 items for Dairy -->
+            <!-- For simplicity, duplicate the previous two items (you can add real different items as needed) -->
+            <!-- Example for Dairy -->
+            <div class="product dairy"><img src="https://t3.ftcdn.net/jpg/06/46/09/84/360_F_646098454_W6uH0pQrLiLm0UoSLfu9OXLZdOCC9RlO.jpg" alt="Product 3">
+                <h4>Paneer</h4>
+                <p class="price">₹350</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://5.imimg.com/data5/SELLER/Default/2021/1/UV/AI/YP/118764700/fresh-pure-desi-ghee-500x500.jpg" alt="Product 4">
+                <h4>Ghee</h4>
+                <p class="price">₹170</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://media.istockphoto.com/id/1147734001/photo/spiced-buttermilk-indian-traditional-summer-drink.jpg?s=612x612&w=0&k=20&c=pNBgXmfM-DWmKtc7eNXOfD5YfjTUdT26IWnWvDQ5NK8=" alt="Product 5">
+                <h4>Butter Milk</h4>
+                <p class="price">₹60</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWXsoL_kfg3WkCelqG9J89Y-xjmnU2rS0VAg&s" alt="Product 6">
+                <h4>Yogurt</h4>
+                <p class="price">₹230</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://www.agropur.com/us/sites/agropurus/files/images/21-0825-Agropur-American-Style-Cheese-800x530-copy_1.jpg" alt="Product 7">
+                <h4>Cheese</h4>
+                <p class="price">₹220</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://tiimg.tistatic.com/fp/1/007/545/100-pure-fresh-organic-curd-for-home-purpose-restaurant-food-beverage-931.jpg" alt="Product 8">
+                <h4>Curd</h4>
+                <p class="price">₹70</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTW2XKodFI2gisZ4HlD7a3iahZFIph8v_DS3Q&s" alt="Product 9">
+                <h4>Ice Cream</h4>
+                <p class="price">₹280</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://www.dryfruitshome.com/wp-content/uploads/2024/06/DRY-FRUITS-HOME-KULFI.webp" alt="Product 10">
+                <h4>Kulfi</h4>
+                <p class="price">₹150</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGPJqsQPRcnXv3lG3iDRaGihCsfSdG_zJiz9tnP79R7XSKkxbTPH6y8bBbMO-W67Tr4EQ&usqp=CAU" alt="Product 11">
+                <h4>Whipped Cream</h4>
+                <p class="price">₹299</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://rosepng.com/wp-content/uploads/2024/10/s11728_rasgulla_isolated_on_white_background_-stylize_200_1d31d048-d608-4953-b288-4aad851f5988_1-photoroom.png" alt="Product 12">
+                <h4>Rasgulla</h4>
+                <p class="price">₹190</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxkhLBtAU0ECssMZDKu_kT8zDBWUxFFwIjqQ-WM3cJgMnMe2sYiWvzZjx84eOfFMYpZXY&usqp=CAU" alt="Product 13">
+                <h4>Milk Powder</h4>
+                <p class="price">₹120</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://png.pngtree.com/png-vector/20240320/ourlarge/pngtree-gulab-jamun-in-bowl-photo-png-image_11958185.png" alt="Product 14">
+                <h4>Gulab Jamun</h4>
+                <p class="price">₹490</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://tiimg.tistatic.com/fp/1/007/812/rectangular-shaped-healthy-tasty-dry-fruit-sweet-soan-papdi-541.jpg" alt="Product 15">
+                <h4>Soan Papdi</h4>
+                <p class="price">₹220</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG3lHLF0N7DY1kpaTic3sWtCw0ZPYvAMWGd9UoPjR3OFdFUDxHUrHL4pjAjyyC9flSnDs&usqp=CAU" alt="Product 16">
+                <h4>Milk Cake</h4>
+                <p class="price">₹400</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://www.dessertfortwo.com/wp-content/uploads/2023/02/Banana-Milkshake-8.jpg" alt="Product 17">
+                <h4>Banana MilkShake</h4>
+                <p class="price">₹290</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://static.vecteezy.com/system/resources/thumbnails/047/390/450/small/creamy-sour-cream-in-a-bowl-on-transparent-background-png.png" alt="Product 19">
+                <h4>Sour Cream</h4>
+                <p class="price">₹110</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://static.toiimg.com/thumb/84226147.cms?width=1200&height=900" alt="Product 21">
+                <h4>Blueberry MilkShake</h4>
+                <p class="price">₹520</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product dairy"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT18i6TDeoj7Mp14UHldbW2cR92hSRIHgN-6SXDY9lG5BaDtxK7-fEPXUVnUF-HAKhVKwQ&usqp=CAU" alt="Product 23">
+                <h4>Strawberry Milkshake</h4>
+                <p class="price">₹300</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+
+            <!-- Repeat until you have 25 items for Dairy category -->
+            <!-- Do the same for Vegetables and Snacks below -->
+
+            <!-- Vegetables Products (25 Items) -->
+            <div class="product vegetables"><img src="https://wallpapers.com/images/hd/fresh-carrotsand-slices-png-ffdor0xs3a5j7fly.jpg" alt="Product 1">
+                <h4>Carrot</h4>
+                <p class="price">₹90</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://wallpapers.com/images/hd/basketof-fresh-potatoes-jpg-1m8et92xxahdopnu.jpg" alt="Product 2">
+                <h4>Potato</h4>
+                <p class="price">₹80</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div><button class="add-to-cart">Add to Cart</button>
+
+            </div>
+            <div class="product vegetables"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY7VIEoUvzoeTr9aHH8ApqrQ24mPDkVROtrQ&s" alt="Product 3">
+                <h4>Onion</h4>
+                <p class="price">₹110</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+
+            </div>
+            <div class="product vegetables"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6txNUuhsewAB9uHSNwvZC8twQqYvch8r5iw&s" alt="Product 4">
+                <h4>Tomato</h4>
+                <p class="price">₹125</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://tajgenerics.com/wp-content/uploads/cache/images/Spinach-Provides-Neurological-Benefits/Spinach-Provides-Neurological-Benefits-2698420613.jpg" alt="Product 5">
+                <h4>Spinach</h4>
+                <p class="price">₹130</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div><button class="add-to-cart">Add to Cart</button>
+
+            </div>
+            <div class="product vegetables"><img src="https://w7.pngwing.com/pngs/930/640/png-transparent-selective-focus-of-lettuce-lettuce-sandwich-butterhead-lettuce-vegetable-salad-food-lettuce-leaf-vegetable-superfood-spring-greens-thumbnail.png" alt="Product 6">
+                <h4>Lettuce</h4>
+                <p class="price">₹149</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://static.vecteezy.com/system/resources/previews/039/652/238/non_2x/ai-generated-broccoli-green-cauliflower-green-broccoli-broccoli-transparent-background-broccoli-without-background-png.png" alt="Product 7">
+                <h4>Broccoli</h4>
+                <p class="price">₹299</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div><button class="add-to-cart">Add to Cart</button>
+
+            </div>
+            <div class="product vegetables"><img src="https://wallpapers.com/images/hd/fresh-cauliflower-isolated-png-0boo79qxfnkhkskb.jpg" alt="Product 8">
+                <h4>Cauliflower</h4>
+                <p class="price">₹300</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://www.shutterstock.com/image-photo/capsicums-on-bowl-wooden-table-600nw-2468844711.jpg" alt="Product 9">
+                <h4>Bell Pepper</h4>
+                <p class="price">₹180</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://purepng.com/public/uploads/large/purepng.com-cucumbercucumbervegetablespicklegreenfoodhealthycucumbers-481522161925n6wbx.png" alt="Product 10">
+                <h4>Cucumber</h4>
+                <p class="price">₹120</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwcTGsRefvmg2SovhEojvzz3JPpfjkTs9BCjp8l_Tn0e0tjQi8PZTxq05hBwHL05UuBDc&usqp=CAU" alt="Product 11">
+                <h4>Eggplant</h4>
+                <p class="price">₹250</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://5.imimg.com/data5/ECOM/Default/2023/4/300005643/KY/OJ/JL/147328428/1649691910137-sku-0215-0-500x500.png" alt="Product 12">
+                <h4>BitterGourd</h4>
+                <p class="price">₹170</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://genius-international.com/assets/images/products/20.png" alt="Product 13">
+                <h4>LadyFinger</h4>
+                <p class="price">₹350</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://png.pngtree.com/png-vector/20240709/ourlarge/pngtree-fresh-green-beans-isolated-png-image_13033503.png" alt="Product 14">
+                <h4>Green Beans</h4>
+                <p class="price">₹230</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="" alt="Product 15">
+                <h4>Asparagus</h4>
+                <p class="price">₹400</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://shoplineimg.com/5cdbde5615c0710001012373/5ea125a87420f8002ab38546/800x.jpeg?" alt="Product 16">
+                <h4>Sweet Potato</h4>
+                <p class="price">₹299</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgtmQvdmAEtw1nTDfJkdXtqpWVrvphyKxFA3ueKSgeiBy6_R8I8v6392z8xggRyVDCzRU&usqp=CAU" alt="Product 17">
+                <h4>Radish</h4>
+                <p class="price">₹150</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://e7.pngegg.com/pngimages/249/186/png-clipart-nutrient-pea-organic-food-vegetable-pea-natural-foods-food.png" alt="Product 18">
+                <h4>Peas</h4>
+                <p class="price">₹190</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://wallpapers.com/images/featured/garlic-png-k9gli6gidj3p1439.jpg" alt="Product 19">
+                <h4>Garlic</h4>
+                <p class="price">₹180</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product vegetables"><img src="https://img.freepik.com/premium-psd/versatile-corn-vegetable-png_68880-14620.jpg" alt="Product 20">
+                <h4>Corn</h4>
+                <p class="price">₹270</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+
+            <!-- Snacks Products (25 Items) -->
+            <div class="product snacks"><img src="https://static.vecteezy.com/system/resources/thumbnails/035/321/754/small_2x/ai-generated-potato-chips-in-a-bowl-isolated-on-a-transparent-background-png.png" alt="Product 1">
+                <h4>Chips</h4>
+                <p class="price">₹189</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://www.nicepng.com/png/detail/283-2833776_biscuits-png.png" alt="Product 2">
+                <h4>Biscuits</h4>
+                <p class="price">₹249</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://pngimg.com/d/chocolate_PNG39.png" alt="Product 3">
+                <h4>Chocolate Bar</h4>
+                <p class="price">₹150</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://png.pngtree.com/png-vector/20240813/ourmid/pngtree-homemade-salt-popcorn-the-ultimate-snack-for-movie-lovers-png-image_13468500.png" alt="Product 4">
+                <h4>Popcorn</h4>
+                <p class="price">₹200</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://png.pngtree.com/png-vector/20231120/ourmid/pngtree-granola-bars-with-nuts-and-dried-cranberries-on-white-background-png-image_10671276.png" alt="Product 5">
+                <h4>Granola Bar</h4>
+                <p class="price">₹299</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://images.meesho.com/images/products/335381477/vs7yu_512.webp" alt="Product 6">
+                <h4>Gummy Bears</h4>
+                <p class="price">₹199</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://4.imimg.com/data4/GN/HS/MY-13267530/groundnut-candy.jpg" alt="Product 7">
+                <h4>Peanut bar</h4>
+                <p class="price">₹350</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkorZeGNfGEsHyyNvCfe1nVRMI5wxNISCElw&s" alt="Product 8">
+                <h4>Ice Cream</h4>
+                <p class="price">₹400</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://static.vecteezy.com/system/resources/previews/034/339/023/non_2x/cookies-with-cream-with-ai-generated-free-png.png" alt="Product 9">
+                <h4>Cookies</h4>
+                <p class="price">₹299</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://png.pngtree.com/png-clipart/20190902/original/pngtree-real-shot-birthday-cream-cake-png-image_4409823.jpg" alt="Product 10">
+                <h4>Cake</h4>
+                <p class="price">₹300</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://static.vecteezy.com/system/resources/thumbnails/051/714/631/small/a-plate-with-several-samosas-on-it-png.png" alt="Product 11">
+                <h4>Samosa</h4>
+                <p class="price">₹150</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://img.freepik.com/premium-photo/muesli-bars-isolated-white-background_128937-1296.jpg?semt=ais_hybrid" alt="Product 12">
+                <h4>Energy Bar</h4>
+                <p class="price">₹250</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://media.istockphoto.com/id/1176468041/photo/aloo-bhujia.jpg?s=612x612&w=0&k=20&c=PyHucXbUzin4W5ev1UFcHklk-m4zu-244Rc1TCGG-LQ=" alt="Product 13">
+                <h4>Mixture</h4>
+                <p class="price">₹189</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLkgnsnfzVNaclcoWvbuh-dtWkzNnbgy4kgXNbOn8TJdzSpVNNNFIiLGJOBuZRW06J9Ik&usqp=CAU" alt="Product 14">
+                <h4>Cheese Balls</h4>
+                <p class="price">₹230</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://www.shutterstock.com/image-photo/fresh-summer-fruits-on-sticks-260nw-250926019.jpg" alt="Product 15">
+                <h4>Fruit Snacks</h4>
+                <p class="price">₹200</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://static.vecteezy.com/system/resources/previews/052/919/763/non_2x/close-up-of-a-chocolate-covered-granola-bar-png.png" alt="Product 16">
+                <h4>Snack Bars</h4>
+                <p class="price">₹320</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMmgpO6huS9stzXdEIKaJfv9ldFoZ5iqos1N0ocSHKCjQ5_xe0LLqZ31e8FjFh3VMLxrU&usqp=CAU" alt="Product 17">
+                <h4>Chewing Gum</h4>
+                <p class="price">199</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://c8.alamy.com/comp/CPGM1N/colorful-jelly-candies-in-glass-bowl-isolated-on-white-CPGM1N.jpg" alt="Product 18">
+                <h4>Hard Candies</h4>
+                <p class="price">₹129</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://png.pngtree.com/png-vector/20240202/ourlarge/pngtree-marshmallow-in-the-bowl-cutout-png-file-png-image_11590170.png" alt="Product 19">
+                <h4>Marshmallows</h4>
+                <p class="price">₹179</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product snacks"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHfbQqZmUaTzO4U8oR1WAN2CGqrvbTh9K3jQ&s" alt="Product 20">
+                <h4>Rice Cakes</h4>
+                <p class="price">₹210</p>
+                <div class="quantity-container">
+                    <label class="quantity-label" for="ghee-quantity">Quantity:</label>
+                    <input type="number" id="ghee-quantity" class="quantity" value="1" min="1">
+                </div>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+<br><br>
+</div>
+</div>
+    <footer>
+        <p>&copy; 2024 Smart Grocery. All rights reserved.</p>
+    </footer>
+ <!-- Popup Notification -->
+ <div id="popup" class="popup"></div>
+
+    <script>
+          
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function updateLocalStorage() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function showPopup(message) {
+    const popup = document.getElementById('popup');
+    popup.textContent = message;
+    popup.style.display = 'block';
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 3000); // Popup disappears after 3 seconds
+}
+
+document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', event => {
+        const productDiv = event.target.closest('.product');
+        const productName = productDiv.querySelector('h4').textContent;
+        const productPrice = parseFloat(productDiv.querySelector('.price').textContent.replace('₹', ''));
+        const quantityInput = productDiv.querySelector('.quantity');
+        const quantity = parseInt(quantityInput.value);
+
+        if (isNaN(quantity) || quantity < 1) {
+            alert('Please enter a valid quantity.');
+            return;
+        }
+
+        const existingItem = cart.find(item => item.name === productName);
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.push({ name: productName, price: productPrice, quantity });
+        }
+
+        updateLocalStorage();
+        showPopup(`${productName} added to the cart!`);
+        quantityInput.value = 1;
+    });
+});
+
+
+
+// ith named steps and descriptions
+const steps = [
+    {
+        title: "Welcome to Smart Grocery!",
+        description: "This is where you can search for your groceries. Enter any item in the <span class='highlight'>Search Bar</span> to find it instantly.",
+        action: "Proceed to Search"
+    },
+    {
+        title: "Step 2: Browse Categories",
+        description: "You can browse different <span class='highlight'>Categories</span> such as Dairy, Vegetables, and Snacks. Use these buttons to explore.",
+        action: "Explore Categories"
+    },
+    {
+        title: "Step 3: Manage Your Grocery List",
+        description: "Create and manage your personalized grocery list. Add items to your list and track your budget using the <span class='highlight'>Manage List</span> button.",
+        action: "Go to Manage List"
+    },
+    {
+        title: "Step 4: Sign Up or Log In",
+        description: "Sign up or <span class='highlight'>Log In</span> to save your grocery list and preferences. This will help you have a personalized shopping experience.",
+        action: "Create an Account"
+    },
+    {
+        title: "Step 5: Toggle Dark Mode",
+        description: "Toggle the <span class='highlight'>Dark Mode</span> feature for a comfortable shopping experience, especially in low-light environments.",
+        action: "Activate Dark Mode"
+    },
+    {
+        title: "Step 6: View Your Rewards",
+        description: "Check out your <span class='highlight'>Rewards</span> from the header section and track your offers and discounts.",
+        action: "View Rewards"
+    }
+];
+
+let currentStep = 0;
+
+// Get the modal elements
+const modal = document.getElementById("walkthroughModal");
+const stepTitle = document.getElementById("stepTitle");
+const stepDescription = document.getElementById("stepDescription");
+const nextButton = document.getElementById("nextButton");
+const skipButton = document.getElementById("skipButton");
+
+// Function to open the modal
+function openWalkthrough() {
+    modal.style.display = "block";
+    updateStepContent();
+}
+
+// Function to close the modal
+function closeWalkthrough() {
+    modal.style.display = "none";
+}
+
+// Function to update the modal content based on the current step
+function updateStepContent() {
+    stepTitle.textContent = steps[currentStep].title;
+    stepDescription.innerHTML = steps[currentStep].description;
+
+    // Change the button text according to the step
+    nextButton.textContent = steps[currentStep].action;
+
+    // Disable the "Next" button if we are on the last step
+    if (currentStep === steps.length - 1) {
+        nextButton.textContent = "Got it!"; // Change the button text to 'Got it!' on last step
+    }
+}
+
+// Function to go to the next step
+function nextStep() {
+    currentStep++;
+    if (currentStep >= steps.length) {
+        closeWalkthrough(); // Close the walkthrough when we reach the last step
+    } else {
+        updateStepContent();
+    }
+}
+
+// Function to skip the walkthrough
+function skipWalkthrough() {
+    closeWalkthrough(); // Close the modal immediately
+}
+
+// Optional: Close the modal when the user clicks outside of the modal content
+window.onclick = function (event) {
+    if (event.target === modal) {
+        closeWalkthrough();
+    }
+}
+
+// Open the walkthrough modal when the page loads (or based on your trigger)
+window.onload = openWalkthrough;
+
+
+
+// Function to update the modal content based on the current step
+function updateStepContent() {
+    stepTitle.textContent = steps[currentStep].title;
+    stepDescription.innerHTML = steps[currentStep].description;
+
+    // Change the button text according to the step
+    nextButton.textContent = steps[currentStep].action;
+
+    // Disable the "Next" button if we are on the last step
+    if (currentStep === steps.length - 1) {
+        nextButton.textContent = "Got it!"; // Change the button text to 'Got it!' on last step
+    }
+}
+
+// Function to go to the next step
+function nextStep() {
+    currentStep++;
+    if (currentStep >= steps.length) {
+        closeWalkthrough(); // Close the walkthrough when we reach the last step
+    } else {
+        updateStepContent();
+    }
+}
+
+// Function to skip the walkthrough
+function skipWalkthrough() {
+    closeWalkthrough(); // Close the modal immediately
+}
+
+// Optional: Close the modal when the user clicks outside of the modal content
+window.onclick = function (event) {
+    if (event.target === modal) {
+        closeWalkthrough();
+    }
+}
+
+// Open the walkthrough modal when the page loads (or based on your trigger)
+window.onload = openWalkthrough;
+
+
+        // Example JavaScript to show the modal
+        
+document.querySelector('.modal').style.display = 'block';
+
+        // On page load, check if the user is logged in and update the navbar accordingly
+        window.onload = function() {
+            const loggedIn = localStorage.getItem("loggedIn");
+            if (loggedIn === "true") {
+                document.getElementById('register').style.display = 'none'; // Hide register button
+                document.getElementById('logout-btn').style.display = 'inline'; // Show logout button
+            } else {
+                document.getElementById('register').style.display = 'inline'; // Show register button
+                document.getElementById('logout-btn').style.display = 'none'; // Hide logout button
+            }
+        };
+        function navigateToReward(){
+            window.location.href="reward.html";
+                }
+
+        // Function to navigate to the Manage List page
+        function navigateToManageList() {
+            window.location.href = "managelist.html"; // Redirects to managelist.html
+        }
+        function navigateToRegisterForm(){
+            window.location.href="register.html";
+        }
+        function navigateToContact(){
+            window.location.href="contact.html";
+        }
+
+        function navigateToMore(){
+            window.location.href="more.html";
+        }
+        function navigateToView(){
+            window.location.href="view.html";
+        }
+        // Function to open the Registration Modal
+        function openRegisterModal() {
+            document.getElementById('registrationModal').style.display = 'block'; // Display the modal
+        }
+
+        // Function to close the Registration Modal
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('registrationModal').style.display = 'none'; // Hide the modal
+        });
+
+        // Function to show the Login Form
+        function showLoginForm() {
+            document.getElementById('registrationModal').style.display = 'none'; // Hide the registration modal
+            document.getElementById('loginModal').style.display = 'block'; // Show the login modal
+        }
+
+        // Function to show the Registration Form
+        function showRegisterForm() {
+            document.getElementById('loginModal').style.display = 'none'; // Hide the login modal
+            document.getElementById('registrationModal').style.display = 'block'; // Show the registration modal
+        }
+
+        // Function to close the Login Modal
+        document.getElementById('closeLoginModal').addEventListener('click', function() {
+            document.getElementById('loginModal').style.display = 'none'; // Hide the modal
+        });
+
+        // Function to handle registration form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission for now
+            alert("Registration successful");
+            // After registration, set login state and redirect to home page
+            localStorage.setItem("loggedIn", "true"); // Set login state
+            document.getElementById('registrationModal').style.display = 'none';
+            document.getElementById('register').style.display = 'none'; // Hide the register button
+            document.getElementById('logout-btn').style.display = 'inline'; // Show the logout button
+            window.location.href = "index.html"; // Redirect to the home page
+        });
+
+        // Function to handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission for now
+            alert("Login successful");
+            // After login, set login state and redirect to home page
+            localStorage.setItem("loggedIn", "true"); // Set login state
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('register').style.display = 'none'; // Hide the register button
+            document.getElementById('logout-btn').style.display = 'inline'; // Show the logout button
+            window.location.href = "index.html"; // Redirect to the home page
+        });
+
+        // Function to log out
+        function logout() {
+            localStorage.removeItem("loggedIn"); // Remove login state
+            document.getElementById('logout-btn').style.display = 'none'; // Hide the logout button
+            document.getElementById('register').style.display = 'inline'; // Show the register button again
+            window.location.href = "index.html"; // Redirect to home page
+        }
+
+        // Function to filter products based on search input
+document.getElementById('search').addEventListener('input', function (e) {
+    const query = e.target.value.toLowerCase();
+    const products = document.querySelectorAll('.product');
+
+    products.forEach(product => {
+        const name = product.querySelector('h4').textContent.toLowerCase();
+        if (name.includes(query)) {
+            product.style.display = 'block';  // Show product
+        } else {
+            product.style.display = 'none';   // Hide product
+        }
+    });
+});
+// Function to filter products by category
+function filterCategory(category) {
+    const products = document.querySelectorAll('.product');
+    let visibleProducts = 0;
+    
+    products.forEach(product => {
+        if (product.classList.contains(category)) {
+            product.style.display = 'block';  // Show product
+            visibleProducts++;
+        } else {
+            product.style.display = 'none';   // Hide product
+        }
+    });
+
+    const productList = document.querySelector('.product-list');
+    if (visibleProducts > 0) {
+        productList.style.display = 'block';  // Show the product list if there's at least one product to show
+    } else {
+        productList.style.display = 'none';   // Hide the product list if no products match
+    }
+}
+
+    </script>
+</body>
+</html>

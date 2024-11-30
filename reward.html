@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reward and Badge Earned</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-image: url("https://mydevelopment.zone/media/1591/open-badges-my-development-zone.jpg");
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        /* button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049; */
+        /* } */
+
+        #rewardsSection, #badgesSection {
+            margin-top: 30px;
+        }
+
+        #rewardsList {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #rewardsList li {
+            background-color: #e7ffe7;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        #badges {
+            display: flex;
+            gap: 15px;
+        }
+
+        .badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .badge-1 { background-color: #ffcc00; } /* Gold Badge */
+        .badge-2 { background-color:  #C0C0C0; } /* Silver Badge */
+        .badge-3 { background-color:  #CD7F32; } /* Bronze Badge */
+
+        /* Style for the discount box */
+        #discountBox {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e7f7ff;
+            border-radius: 8px;
+            border: 1px solid #bbb;
+            font-size: 1.2rem;
+        }
+
+        #badgesMessage {
+            color: red;
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }
+        /* Style for the "Click Here" button */
+.click-here-btn {
+    padding: 10px 20px;   /* Reduced padding for a smaller button */
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1rem;       /* Smaller font size */
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.click-here-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.click-here-btn:active {
+    background-color: #388e3c; /* Darker green when button is pressed */
+    transform: scale(0.98); /* Shrink the button a little when clicked */
+}
+footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <button id="lists-btn" onclick="navigateToHome()">Home</button>
+        <button id="home-btn" class="active" onclick="navigateToManageList()">Manage List</button>
+        <button id="view-cart-button" onclick="navigateToView()">View Cart</button>
+        <button id="settings-btn" onclick="navigateToMore()">More</button>
+        <button id="settings-btn" onclick="navigateToContact()">Contact</button>
+        <button id="register" onclick="navigateToRegisterForm()">Register/Log in</button>
+        <button id="logout-btn" style="display: none;" onclick="logout()">Log Out</button>
+        <button class="dark-mode-toggle" id="dark-mode-toggle">Dark Mode</button>
+    </div>
+
+    <div class="container">
+        <h1>Calculate Final Cost and Earn Rewards</h1>
+
+        <!-- User Input for Final Cost -->
+        <label for="cost">Final Cost (₹):</label>
+        <input type="number" id="cost" placeholder="Enter your final cost" />
+
+        <button class="click-here-btn" onclick="calculateRewards()">Click Here To View Your Rewards and Badges Earned</button>
+
+        <div id="rewardsSection">
+            <h3>Rewards Earned:</h3>
+            <ul id="rewardsList"></ul>
+        </div>
+
+        <div id="badgesSection">
+            <h3>Your Badges:</h3>
+            <div id="badges"></div>
+            <div id="badgesMessage"></div> <!-- Display message when no badges earned -->
+        </div>
+
+        <!-- Discount Box Section -->
+        <div id="discountBox">
+            <h3>Discount Applied:</h3>
+            <p id="discountMessage"></p>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Smart Grocery. All rights reserved.</p>
+    </footer>
+    <script>
+        function calculateRewards() {
+            const cost = parseFloat(document.getElementById('cost').value);
+            const rewardsList = document.getElementById('rewardsList');
+            const badges = document.getElementById('badges');
+            const discountMessage = document.getElementById('discountMessage');
+            const badgesMessage = document.getElementById('badgesMessage');  // For message if no badges earned
+
+            // Check if the user entered a valid cost
+            if (isNaN(cost) || cost <= 0) {
+                alert("Please enter a valid cost greater than 0.");
+                return;
+            }
+
+            // Clear previous rewards, badges, and discount message
+            rewardsList.innerHTML = '';
+            badges.innerHTML = '';
+            discountMessage.innerHTML = '';
+            badgesMessage.innerHTML = ''; // Clear previous message if any
+
+            // Generate a random discount between 5% and 50%
+            const discountPercentage = Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+            const discount = cost * (discountPercentage / 100);
+            const finalAmount = cost - discount;
+
+            // Initialize reward list and badge display
+            let rewards = [];
+            let earnedBadges = [];
+
+            // Display the discount applied and final amount
+            discountMessage.textContent = `You received a ${discountPercentage}% discount! You saved ₹${discount.toFixed(2)}. Your final cost is ₹${finalAmount.toFixed(2)}.`;
+
+            // Save the discount for the next purchase
+            localStorage.setItem('nextDiscount', discount.toFixed(2));
+
+            // Milestone 1: Spending more than ₹5000
+            if (finalAmount > 5000) {
+                rewards.push("Budget Savvy: Spending over ₹5000");
+                earnedBadges.push("1");  // Gold badge
+            }
+
+            // Milestone 2: Saving more than ₹1000
+            if (discount > 1000) {
+                rewards.push(`Smart Shopper: Saved ₹${discount.toFixed(2)}`);
+                earnedBadges.push("2");  // Silver badge
+            }
+
+            // Optional Milestone: Referral (for demonstration purposes)
+            // Uncomment and modify for actual use case
+            // rewards.push("Referral King: Referred a friend");
+            // earnedBadges.push("3");  // Bronze badge
+
+            // If no badges were earned, display a message under the badges section
+            if (earnedBadges.length === 0) {
+                badgesMessage.textContent = "No badges earned. Try spending more!";
+            }
+
+            // Check if no rewards were earned
+            if (rewards.length === 0) {
+                rewards.push("No rewards earned. Try spending more or saving more!");
+            }
+
+            // Display rewards
+            rewards.forEach(reward => {
+                const li = document.createElement('li');
+                li.textContent = reward;
+                rewardsList.appendChild(li);
+            });
+
+            // Display badges with different colors
+            earnedBadges.forEach(badge => {
+                const badgeElement = document.createElement('div');
+                badgeElement.classList.add('badge');
+                badgeElement.classList.add('badge-' + badge); // Apply different badge color
+                badgeElement.textContent = badge; // Add badge number (1, 2, 3)
+                badges.appendChild(badgeElement);
+            });
+        }
+        // Navigation functions
+        function navigateToManageList() {
+            window.location.href = "managelist.html"; // Redirects to managelist.html
+        }
+
+        function navigateToRegisterForm(){
+            window.location.href="register.html";
+        }
+
+        function navigateToContact(){
+            window.location.href="contact.html";
+        }
+        function navigateToView(){
+            window.location.href="view.html";
+        }
+        function navigateToHome(){
+            window.location.href="index.html";
+        }
+
+        function navigateToMore(){
+            window.location.href="more.html";
+        }
+    </script>
+</body>
+</html>

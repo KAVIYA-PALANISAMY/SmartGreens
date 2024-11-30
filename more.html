@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>More</title>
+    <style>
+        body {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-image: url("https://media.licdn.com/dms/image/D4D12AQGEK_A4hU8yGQ/article-cover_image-shrink_600_2000/0/1718265995050?e=2147483647&v=beta&t=LUI779g12dAYOKiKIq-55LsT66P09zmY0x0mKfnobyg");
+}
+
+         #b1{
+            border: none;
+            width: 60px;
+            height: 60px;
+            margin: 10px;
+            border-radius: 50%;
+            background: transparent;
+            
+            color: black;
+            font-size: 20px;
+            box-shadow: -8px -8px 15px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+         }
+         
+
+/* ------------------------- */
+
+.btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            color: black;
+            background: linear-gradient(45deg, #6abd5f, #16d05d);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Glow effect on hover */
+        .btn::before {
+            
+            color: black;
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(89, 214, 85, 0.783);
+            border-radius: 50%;
+            transition: all 0.4s;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn:hover::before {
+            
+            color: black;
+            width: 0;
+            height: 0;
+        }
+
+        .btn:hover {
+            
+            color: black;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .btn span {
+            
+            color: black;
+            position: relative;
+            z-index: 2;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="nav">
+        <button id="lists-btn" onclick="navigateToHome()">Home</button>
+        <button id="home-btn" class="active" onclick="navigateToManageList()">Manage List</button>
+        <button id="view-cart-button" onclick="navigateToView()">View Cart</button>
+        <button id="settings-btn" onclick="navigateToReward()">View Rewards</button>
+        <button id="contact-btn" onclick="navigateToContact()">Contact</button>
+        <button id="register" onclick="navigateToRegisterForm()">Register/Log in</button>
+        <button id="logout-btn" style="display: none;" onclick="logout()">Log Out</button>
+        <button class="dark-mode-toggle" id="dark-mode-toggle">Dark Mode</button>
+
+        
+    </div>
+   <h1> <div>
+        <button class="btn" onclick="navigateToCalculator()"><span><bold>Calculator</bold></span></button>
+    </div><br><br>
+    <div>
+        <button class="btn" onclick="navigateToFeedback()"><span><bold>Feedback</bold></span></button>
+    </div><br><br>
+    <div>
+        <button class="btn" onclick ="navigateToAbout()"><span><bold>Click To Rate</bold></span></button>
+    </div><br><br>
+    <div>
+        <button class="btn" onclick="navigateToServices()"><span><bold>Services</bold></span></button>
+    </div>
+                
+</h1>
+<footer>
+    <p>&copy; 2024 Smart Grocery. All rights reserved.</p>
+</footer>
+        <script src="javascript.js"></script>
+    <script>
+        // JavaScript functions to handle navigation
+        function navigateToHome() {
+            window.location.href="index.html"
+        }
+        function navigateToView(){
+            window.location.href="view.html";
+        }
+        function navigateToManageList() {
+            window.location.href="managelist.html";
+        }
+
+        function navigateToRegisterForm() {
+            window.location.href="register.html";
+        }
+
+        function navigateToContact() {
+            window.location.href="contact.html";
+        }
+        function navigateToCalculator(){
+            window.location.href="calculator.html";
+        }
+        function navigateToFeedback(){
+            window.location.href="feedback.html";
+        }
+        function navigateToAbout(){
+            window.location.href="about.html";
+        }
+        function navigateToServices(){
+            window.location.href="services.html";
+        }
+        function navigateToReward(){
+            window.location.href="reward.html";
+        }
+
+    </script>
+</body>
+</html>

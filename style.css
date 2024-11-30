@@ -1,0 +1,378 @@
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            /* background-image: url("https://media.licdn.com/dms/image/v2/D4E12AQEf46JrgyF7eA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1713974369171?e=2147483647&v=beta&t=n69ydc1v6jUhx_6jlat_sVrxmfWbavljyyROiYv_BKI"); */
+        }
+
+        .nav {
+            display: flex;
+            margin-top: 0px;
+            justify-content: center;
+            background-color: #09600c;
+            padding: 15px;
+        }
+
+        .nav button {
+            /* background-color: #007BFF; */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 0 15px;
+            border-radius: 5px;
+        }
+
+        .container {
+            flex-grow: 1;
+            width: 80%;
+            margin: 0 auto;
+            padding: 40px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #09600c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #81d484;
+        }
+
+        #listContainer {
+            list-style-type: none;
+            padding: 0;
+
+        }
+
+        #listContainer li {
+            background-color: #f9f9f9;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-list {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+
+        .swipe-button {
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .swipe-button:hover {
+            background-color: #0056b3;
+        }
+
+        .highlight {
+            color: red;
+        }
+        /* Toggle Recommendations as swipe button */
+        .recommendation-toggle {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .recommendation-toggle input {
+            width: 60px;
+            height: 30px;
+            border-radius: 30px;
+            appearance: none;
+            background: #ccc;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        .recommendation-toggle input:checked {
+            background: #4CAF50;
+        }
+
+        .recommendation-toggle input::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.3s ease;
+        }
+
+        .recommendation-toggle input:checked::before {
+            left: 33px;
+        }
+
+        .recommendations {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+        }
+
+        .recommendations ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .recommendations ul li {
+            margin: 5px 0;
+        }
+
+       /* Share button style */
+       .share-button {
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .share-button:hover {
+            background-color: #218838;
+        }
+        #map {
+            height: 300px;
+            width: 80%;
+            margin-top: 30px;
+            margin-left:130px;
+            margin-bottom: 30px;
+            border-color: #0056b3;
+        }
+        /* Dark Mode Toggle Button */
+        .dark-mode-toggle {
+            background-color: #09600c;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .dark-mode-toggle:hover {
+            background-color:#81d484 ;
+        }
+        /* Dark Mode and Light Mode */
+body.dark-mode {
+    background-color: #2C3E50; /* Dark background */
+    color: white; /* Light text color */
+}
+
+body.light-mode {
+    background-color: #f4f4f4; /* Light background */
+    color: black; /* Dark text color */
+}
+
+/* Update other elements for dark mode */
+body.dark-mode .nav {
+    background-color: #34495E; /* Dark navigation bar */
+}
+
+body.dark-mode .nav button {
+    background-color: #2C3E50;
+    color: white;
+}
+
+body.dark-mode .nav button:hover {
+    background-color: #1A242F;
+}
+
+body.dark-mode .container {
+    background-color: #34495E;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode input[type="text"], body.dark-mode input[type="number"] {
+    background-color: #2C3E50;
+    color: white;
+    border: 1px solid #555;
+}
+
+body.dark-mode button {
+    background-color: #16A085;
+}
+
+body.dark-mode .highlight {
+    color: #E74C3C; /* Highlight in red for dark mode */
+}
+
+/* Update map styles if needed for dark mode */
+body.dark-mode #map {
+    border-color: #2980B9;
+}
+@media (max-width: 768px) {
+    /* Adjustments for smaller screens like tablets and mobiles */
+    .container {
+        width: 90%;  /* Full width for smaller screens */
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.8rem;  /* Smaller font size for smaller screens */
+    }
+
+    .nav button {
+        padding: 10px 15px;
+        font-size: 16px;
+        margin: 5px;
+    }
+
+    input[type="text"], input[type="number"] {
+        width: 100%;  /* Make input fields full width on smaller screens */
+    }
+
+    #map {
+        height: 250px; /* Smaller map for smaller screens */
+    }
+}
+/* Modal styles */
+.modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-content .close-btn {
+            background-color: #FF5733;
+        }
+
+        .modal-content .close-btn:hover {
+            background-color: #C70039;
+        }
+
+        /* Larger Screens (Tablet and Desktop) */
+@media (min-width: 768px) {
+    .nav {
+        flex-wrap: nowrap; /* Keep buttons in a row */
+        justify-content: space-around;
+    }
+
+    .nav button {
+        width: auto; /* Reset button width */
+    }
+
+    .box {
+        width: 60%; /* Use a larger width */
+    }
+
+    footer {
+        font-size: 16px;
+    }
+}
+
+    

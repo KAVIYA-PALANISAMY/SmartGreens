@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-image: url("https://as2.ftcdn.net/v2/jpg/05/11/09/69/1000_F_511096972_QSKz0Zn2PUKtMg76U6vMKAXmEZQ2CbxH.jpg");
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: rgba(187, 233, 184, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Box for Rating Section */
+        .rating-box {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.8); /* Light background for the box */
+            margin: 20px 0;
+        }
+
+        .rating {
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 40px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        /* Change color when the stars are checked */
+        .rating input:checked ~ label,
+        .rating input:checked + label:hover,
+        .rating input:checked + label:hover ~ label {
+            color: #ffcc00;
+        }
+
+        /* Change color when hovering on stars */
+        .rating input:hover ~ label {
+            color: #ffcc00;
+        }
+
+        .feedback-form {
+            margin-top: 30px;
+        }
+
+        .feedback-form textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.5; /* Initially disabled */
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .submit-btn:disabled:hover {
+            background-color: #4CAF50;
+        }
+
+        .rating-summary {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .rating-summary p {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .close-btn:hover {
+            background-color: #45a049;
+        }
+
+        .b {
+            margin-left: 400px;
+            margin-top: 30px;
+            padding: 10px 150px;
+            margin-right: 300px;
+            padding-left: 200px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #838883, #16d05d);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: auto;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .b:hover {
+            background: linear-gradient(45deg, #16d05d, #6abd5f);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .b:focus {
+            outline: none;
+        }
+
+        .b span {
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="b" onclick="navigateToMore()">Back</button>
+    <div class="container">
+        <h1>Rate Your SmartGreens Grocery Purchase Experience</h1>
+        
+        <!-- Rating Section inside a box -->
+        <div class="rating-box">
+            <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5" onclick="checkFormCompletion()">
+                <label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4" onclick="checkFormCompletion()">
+                <label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3" onclick="checkFormCompletion()">
+                <label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2" onclick="checkFormCompletion()">
+                <label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1" onclick="checkFormCompletion()">
+                <label for="star1">★</label>
+            </div>
+        </div>
+
+        <!-- Feedback Form -->
+        <div class="feedback-form">
+            <textarea id="feedback" placeholder="Leave your feedback here..." oninput="checkFormCompletion()"></textarea>
+            <br>
+            <button class="submit-btn" id="submit-btn" onclick="submitRating()" disabled>Submit Feedback</button>
+        </div>
+
+        <!-- Rating Summary Section -->
+        <div class="rating-summary">
+            <p id="rating-message">Your rating: Not yet submitted.</p>
+            <p id="feedback-message">Your feedback: None.</p>
+        </div>
+    </div>
+
+    <!-- Modal for Thank You Message -->
+    <div id="thankYouModal" class="modal">
+        <div class="modal-content">
+            <h2>Thank You!</h2>
+            <p>Your feedback has been submitted successfully.</p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function navigateToMore() {
+            window.location.href = "more.html";
+        }
+
+        // Function to check if the form is completed (rating + feedback)
+        function checkFormCompletion() {
+            const ratingValue = document.querySelector('input[name="rating"]:checked');
+            const feedbackText = document.getElementById('feedback').value;
+
+            // Enable the submit button only if both rating and feedback are filled
+            if (ratingValue && feedbackText.trim() !== "") {
+                document.getElementById('submit-btn').disabled = false;
+                document.getElementById('submit-btn').style.opacity = 1;
+            } else {
+                document.getElementById('submit-btn').disabled = true;
+                document.getElementById('submit-btn').style.opacity = 0.5;
+            }
+        }
+
+        // Function to handle the submission of feedback and rating
+        function submitRating() {
+            // Get the selected rating value
+            const ratingValue = document.querySelector('input[name="rating"]:checked');
+            const feedbackText = document.getElementById('feedback').value;
+
+            // Display the rating and feedback
+            if (ratingValue) {
+                const rating = ratingValue.value;
+                document.getElementById('rating-message').textContent = `Your rating: ${rating} stars`;
+            } else {
+                document.getElementById('rating-message').textContent = 'Your rating: Not yet submitted.';
+            }
+
+            // Display the feedback
+            if (feedbackText) {
+                document.getElementById('feedback-message').textContent = `Your feedback: ${feedbackText}`;
+            } else {
+                document.getElementById('feedback-message').textContent = 'Your feedback: None.';
+            }
+
+            // Show the thank you modal
+            document.getElementById('thankYouModal').style.display = 'block';
+
+            // Redirect to home after 3 seconds
+            setTimeout(function() {
+                window.location.href = 'more.html'; // Change this to your home page URL
+            }, 3000);
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById('thankYouModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
+
+
+

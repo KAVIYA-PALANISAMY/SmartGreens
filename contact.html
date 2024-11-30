@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - SmartGreens</title>
+    <link rel="stylesheet" href="style.css">
+    <style>/* Basic Reset */
+        /* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+    background-image: url("https://thumbs.dreamstime.com/b/app-also-features-customer-support-service-chat-function-hotline-available-any-questions-concerns-vector-319867870.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* This ensures the background image stays fixed */
+}
+
+header {
+    background-color: #4CAF50;
+    /* background-color: rgba(255, 255, 255, 0.8); */
+    color: rgb(31, 77, 23);
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.2rem;
+}
+
+.contact-form {
+    margin: 40px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    border-radius: 8px;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #4CAF50;
+}
+
+label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+input[type="text"], input[type="email"], textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+button.submit-btn:hover {
+    background-color: #45a049;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+        </style>
+</head>
+<body>
+    <div class="nav">
+        <button id="lists-btn" onclick="navigateToHome()">Home</button>
+        <button id="home-btn" class="active" onclick="navigateToManageList()">Manage list</button>
+        
+        <button id="view-cart-button" onclick="navigateToView()">View Cart</button>
+       <button id="settings-btn" onclick="navigateToReward()">View Rewards</button>
+        <button id="settings-btn" onclick="navigateToMore()">More</button>
+        <button id="register" onclick="navigateToRegisterForm()">Register/Log in</button>
+        <button id="logout-btn" style="display: none;" onclick="logout()">Log Out</button>
+        <button class="dark-mode-toggle" id="dark-mode-toggle">Dark Mode</button>
+
+    </div>
+
+    <header>
+        
+        <h1>Contact Smart Grocery Shop</h1>
+        <p>Have any questions or need assistance? We're here to help!</p>
+    </header>
+
+    <section class="contact-form">
+        <h2>Get in Touch</h2>
+        <form action="submit_form.php" method="POST">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your name">
+
+            <label for="email">Your Email</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email">
+
+            <label for="message">Your Message</label>
+            <textarea id="message" name="message" rows="4" required placeholder="Enter your message"></textarea>
+
+            <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Smart Grocery Shop | All rights reserved</p>
+    </footer>
+
+    
+    <script src="javascript.js"></script>
+    <script>
+        function navigateToHome() {
+    window.location.href = "index.html"; // Corrected the space in the URL path
+}
+function navigateToView(){
+            window.location.href="view.html";
+        }
+function navigateToManageList(){
+    window.location.href = "managelist.html";
+}
+
+function navigateToRegisterForm() {
+    window.location.href = "register.html"; // Corrected the function name
+}
+function navigateToReward(){
+            window.location.href="reward.html";
+                }
+                function navigateToMore(){
+            window.location.href="more.html";
+        }
+function logout() {
+    // Remove login status from localStorage
+    localStorage.removeItem("loggedIn");
+
+    // Hide the logout button and show the register button
+    document.getElementById('logout-btn').style.display = 'none';
+    document.getElementById('register').style.display = 'inline';
+
+    // Optionally, redirect the user to the home page after logging out
+    window.location.href = "index.html"; // Redirect to home page
+}
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-image: url("https://static.blog.bolt.eu/LIVE/wp-content/uploads/2022/04/30135418/grocery-list-1024x536.jpg");
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            width: 80%;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #28a745;
+        }
+
+        .services-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .services-list li {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .services-list li::before {
+            content: "✔";
+            margin-right: 10px;
+            color: rgb(28, 221, 28);
+        }
+        
+        button { /* Reduced vertical padding */
+            margin-left: 400px;
+            margin-top:20px;
+            margin-right: 400px;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    font-weight: bold;
+    font-size:20px;
+    background: linear-gradient(45deg, #e6ece6, #16d05d);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: auto;
+}
+
+button:hover {
+    background: linear-gradient(45deg, #16d05d, #6abd5f);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+button:focus {
+    outline: none;
+}
+
+button span {
+    color: white;
+    position: relative;
+    z-index: 2;
+}
+
+
+        
+    </style>
+</head>
+<body><button onclick="navigateToMore()">Back</button>
+    <div class="container">
+        <h1>Our Services</h1>
+        <h2>What We Offer</h2>
+        <ul class="services-list">
+            <li>Personalized Grocery Recommendations</li>
+            <li>Budget Planning & Expense Tracking</li>
+            <li>Easy Item Search and Filtering</li>
+            <li>Manage Multiple Grocery Lists</li>
+            <li>Interactive Map to Find Nearby Stores</li>
+            <li>Regular Promotions & Discount Offers</li>
+        </ul>
+    </div>
+    <script>
+        function navigateToMore(){
+            window.location.href="more.html";
+        }
+    </script>
+</body>
+</html>

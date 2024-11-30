@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-image: url("https://i.redd.it/xuqegxt0b6w01.jpg");
+        }
+        .payment-container {
+            width: 90%;
+            max-width: 400px;
+            background-color: #ffffff;
+            padding: 20px;
+            margin-right: 400px;
+            margin-left: 2px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .payment-summary {
+            margin-bottom: 20px;
+        }
+        .payment-summary h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .payment-summary p {
+            font-size: 16px;
+            color: #555;
+            margin: 0 0 10px 0;
+        }
+        .pay-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .pay-button:hover {
+            background-color: #45a049;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 90%;
+            max-width: 300px;
+        }
+        .popup h2 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .popup p {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .popup button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .popup button:hover {
+            background-color: #45a049;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <section class="payment-summary">
+            <h3>Payment Details</h3>
+            <div id="payment-items-list"></div>
+            <p id="payment-total">Total: ₹0</p>
+        </section>
+
+        <form id="payment-form">
+            <label for="card-details">Enter your card details:</label><br>
+            <input type="text" id="card-details" placeholder="Card Number" required><br>
+            <input type="submit" value="Pay Now" class="pay-button" id="pay-now-button">
+        </form>
+    </div>
+
+    <!-- Popup Modal -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2 id="popup-title">Payment Result</h2>
+            <p id="popup-message">Processing payment...</p>
+            <button id="close-popup">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+        function displayPaymentSummary() {
+            const paymentItemsList = document.getElementById('payment-items-list');
+            const paymentTotal = document.getElementById('payment-total');
+            const payNowButton = document.getElementById('pay-now-button');
+
+            paymentItemsList.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const listItem = document.createElement('p');
+                listItem.textContent = `${item.name} (₹${item.price} x ${item.quantity}) - ₹${(item.price * item.quantity).toFixed(2)}`;
+                paymentItemsList.appendChild(listItem);
+                total += item.price * item.quantity;
+            });
+
+            paymentTotal.textContent = `Total: ₹${total.toFixed(2)}`;
+            payNowButton.value = `Pay ₹${total.toFixed(2)}`;
+        }
+
+        document.getElementById('payment-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const cardDetails = document.getElementById('card-details').value;
+
+            if (cardDetails) {
+                showPopup('Processing payment...', 'Payment Result');
+                setTimeout(() => {
+                    showPopup('Payment successful!', 'Payment Result');
+                    sessionStorage.removeItem('cart');
+                    localStorage.removeItem('cart');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                }, 2000);
+            } else {
+                showPopup('Please enter your card details.', 'Error');
+            }
+        });
+
+        function showPopup(message, title) {
+            const popup = document.getElementById('popup');
+            const popupMessage = document.getElementById('popup-message');
+            const popupTitle = document.getElementById('popup-title');
+            popupMessage.textContent = message;
+            popupTitle.textContent = title;
+            popup.style.display = 'flex';
+        }
+
+        document.getElementById('close-popup').addEventListener('click', function() {
+            document.getElementById('popup').style.display = 'none';
+        });
+
+        displayPaymentSummary();
+    </script>
+</body>
+</html>

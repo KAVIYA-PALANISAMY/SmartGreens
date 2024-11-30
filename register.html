@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register/log in</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Modal Styles */
+        body{
+            
+            background-image: url("https://media.licdn.com/dms/image/v2/D4E12AQEf46JrgyF7eA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1713974369171?e=2147483647&v=beta&t=n69ydc1v6jUhx_6jlat_sVrxmfWbavljyyROiYv_BKI");
+        }
+         /* Navbar Style */
+        /* Navbar Style */
+.nav {
+    position: fixed; /* Keeps the navbar fixed at the top */
+    top: 0; /* Aligns the navbar to the top of the viewport */
+    left: 0; /* Aligns the navbar to the left */
+    width: 100%; /* Ensures the navbar spans the full width */
+    background-color: #09600c; /* Background color of the navbar */
+    color: white; /* Text color of navbar items */
+    display: flex; /* Flexbox for horizontal layout */
+    justify-content: space-around; /* Spaces out the buttons evenly */
+    align-items: center; /* Aligns items vertically */
+    padding: 10px; /* Padding for spacing inside the navbar */
+    z-index: 1000; /* Ensures the navbar appears above other elements */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow for better visibility */
+    margin-top: 0px
+    ;
+}
+
+/* Navbar Button Style */
+.nav button {
+    color: white; /* Text color */
+    background-color: transparent; /* Transparent background */
+    border: none; /* Removes default button border */
+    padding: 15px; /* Padding for button size */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.nav button:hover {
+    background-color: #28a745; /* Hover background color */
+    color: white; /* Text color on hover */
+}
+
+        .nav button {
+            /* background-color: #fff; */
+            color: white;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav button:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+         /* Modal Styles */
+         .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #888;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            background-color: darkred;
+        }
+
+        button[type="submit"], button[type="button"] {
+            padding: 10px 15px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover, button[type="button"]:hover {
+            background-color: darkblue;
+        }
+
+        .form-toggle {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .form-toggle a {
+            color: blue;
+            cursor: pointer;
+        }
+
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+}
+
+.box {
+    width: 60%;
+    margin: 20px auto;
+    padding: 20px;
+    /* background-color: #fff; */
+    background-color: rgba(187, 233, 184, 0.7);
+    border: 2px solid #28a745;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px #00000033;
+    transition: transform 0.3s, box-shadow 0.3s;
+    /* color:white; */
+}
+
+.box h1 {
+    color: #28a745;
+    font-size: 24px;
+    margin: 0;
+    text-align: center;
+}
+
+.box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.image-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #28a745;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+        }
+
+.image-slogan {
+    margin-top: 10px;
+    font-size: 22px;
+    font-family: cursive;
+    color: #ef0909f6;
+    font-weight: bold;
+    margin-top: 70px;;
+}
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    z-index: 1000;
+}
+
+    </style>
+</head>
+<body>
+    
+    <!-- Navigation Bar -->
+    <div class="nav">
+        <button id="lists-btn" onclick="navigateToHome()">Home</button>
+        <button id="home-btn" class="active" onclick="navigateToManageList()">Manage list</button>
+        <button id="view-cart-button" onclick="navigateToView()">View Cart</button>
+       <button id="settings-btn" onclick="navigateToReward()">View Rewards</button>
+        <button id="settings-btn" onclick="navigateToMore()">More</button>
+        <button id="settings-btn" onclick="navigateToContact()">Contact</button>
+        <button id="register" onclick="openRegisterModal()">Register</button>
+        <button id="login-btn" onclick="openLoginModal()">Login</button>
+        <button id="logout-btn" style="display: none;" onclick="logout()">Log Out</button>
+        <button class="dark-mode-toggle" id="dark-mode-toggle">Dark Mode</button>
+    </div>
+    <center>
+
+        <div class="image-container">
+            <p class="image-slogan">Let’s Begin Our Journey to Freshness!</p>
+            <!-- <img src="https://media.licdn.com/dms/image/v2/D4E12AQEf46JrgyF7eA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1713974369171?e=2147483647&v=beta&t=n69ydc1v6jUhx_6jlat_sVrxmfWbavljyyROiYv_BKI" alt="Fresh Grocery" /> -->
+            
+        </div>
+        <br><br><br><br><br><br>
+        <div class="box">
+            <h1>New to Freshness? Tap Register In Header and Begin Your Journey!</h1>
+        </div>
+        <div class="box">
+            <h1>Freshness Awaits – Log In and Continue!</h1>
+        </div>
+        <br><br><br><br>
+    </center>
+    <!-- Modal for Registration Form -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <h2>Register</h2>
+            <form id="registrationForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your name">
+
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" required placeholder="Enter your phone number">
+
+                <label for="aadhar">Aadhar Number:</label>
+                <input type="text" id="aadhar" name="aadhar" required placeholder="Enter your Aadhar number">
+
+                <label for="email">Email ID:</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email ID">
+
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" required placeholder="Enter your address"></textarea>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+
+                <div>
+                    <button type="submit">Submit</button>
+                    <button type="button" class="close-btn" id="closeRegistrationModal">Close</button>
+                </div>
+            </form>
+
+            
+        </div>
+    </div>
+
+    <!-- Modal for Login Form -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="loginName">Name:</label>
+                <input type="text" id="loginName" name="loginName" required placeholder="Enter your name">
+
+                <label for="loginPhone">Phone Number:</label>
+                <input type="text" id="loginPhone" name="loginPhone" required placeholder="Enter your phone number">
+
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" name="loginPassword" required placeholder="Enter your password">
+
+                <div>
+                    <button type="submit">Login</button>
+                    <button type="button" class="close-btn" id="closeLoginModal">Close</button>
+                </div>
+            </form>
+
+            
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2024 Smart Grocery. All rights reserved.</p>
+    </footer>
+    <script>
+        // On page load, check if the user is logged in and update the navbar accordingly
+        window.onload = function() {
+            const loggedIn = localStorage.getItem("loggedIn");
+            if (loggedIn === "true") {
+                document.getElementById('register').style.display = 'none'; // Hide register button
+                document.getElementById('login-btn').style.display = 'none'; // Hide login button
+                document.getElementById('logout-btn').style.display = 'inline'; // Show logout button
+            } else {
+                document.getElementById('register').style.display = 'inline'; // Show register button
+                document.getElementById('login-btn').style.display = 'inline'; // Show login button
+                document.getElementById('logout-btn').style.display = 'none'; // Hide logout button
+            }
+        };
+
+        // Function to navigate to the Manage List page
+        function navigateToManageList() {
+            window.location.href = "managelist.html"; // Redirects to managelist.html
+        }
+         function navigateToContact(){
+            window.location.href="contact.html";
+         }
+         function navigateToHome(){
+            window.location.href="index.html";
+        }
+        function navigateToView(){
+            window.location.href="view.html";
+        }
+
+        function navigateToMore(){
+            window.location.href="more.html";
+        }
+        
+        function navigateToView(){
+            window.location.href="view.html";
+        }
+        function navigateToReward(){
+            window.location.href="reward.html";
+                }
+        // Function to open the Registration Modal
+        function openRegisterModal() {
+            document.getElementById('registrationModal').style.display = 'block'; // Display the modal
+        }
+
+        // Function to open the Login Modal
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'block'; // Display the login modal
+        }
+
+        // Function to close the Registration Modal
+        document.getElementById('closeRegistrationModal').addEventListener('click', function() {
+            document.getElementById('registrationModal').style.display = 'none'; // Hide the modal
+        });
+
+
+        // Function to close the Login Modal
+        document.getElementById('closeLoginModal').addEventListener('click', function() {
+            document.getElementById('loginModal').style.display = 'none'; // Hide the modal
+        });
+
+        // Function to handle registration form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission for now
+            alert("Registration successful");
+            localStorage.setItem("loggedIn", "true"); // Set login state
+            document.getElementById('registrationModal').style.display = 'none';
+            window.location.reload(); // Reload page to update navbar
+        });
+
+        // Function to handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission for now
+            alert("Login successful");
+            localStorage.setItem("loggedIn", "true"); // Set login state
+            document.getElementById('loginModal').style.display = 'none';
+            window.location.reload(); // Reload page to update navbar
+        });
+
+        // Function to log out
+        function logout() {
+            localStorage.removeItem("loggedIn"); // Remove login state
+            window.location.reload(); // Reload page to update navbar
+        }
+    </script>
+
+</body>
+</html>

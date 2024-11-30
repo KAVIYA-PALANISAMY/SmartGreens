@@ -1,0 +1,240 @@
+\<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Lists with Budget</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+    margin: 0; /* Remove any margin */
+    padding: 0; /* Remove any padding */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-image: url("https://i.ndtvimg.com/i/2017-07/green-vegetable_650x400_81501057711.jpg");
+}
+c
+.nav {
+    margin-top: 0; /* Remove margin-top from the navbar */
+    padding: 10px; /* Optional: you can adjust padding if needed */
+    background-color: #09600c; /* Add a background color for better visibility */
+    position: fixed; /* Keep navbar fixed at the top */
+    width: 100%; /* Make navbar span the entire width */
+    z-index: 1000; /* Ensure navbar stays above other content */
+}
+
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow: auto;
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: green;
+        }
+
+        /* Adjusted map container height */
+        #map {
+            height: 300px; /* Reduced height of the map */
+            width: 70%;
+        }footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <button id="home-text" onclick="navigateToHome()">Home</button>
+        <button id="view-cart-button" onclick="navigateToView()">View Cart</button>
+        <button id="settings-btn" onclick="navigateToReward()">View Rewards</button>
+        <button id="settings-btn" onclick="navigateToMore()">More</button>
+        <button id="settings-btn" onclick="navigateToContact()">Contact</button>
+        <button id="register" onclick="navigateToRegisterform()">Register/Log in</button>
+        <button id="logout-btn" style="display: none;" onclick="logout()">Log Out</button>
+        <button class="dark-mode-toggle" id="dark-mode-toggle">Dark Mode</button>
+    </div>
+
+    <div class="container">
+        <h1>Manage Your Lists</h1>
+
+        <!-- Budget Planning Section -->
+        <div>
+            <h2>Budget Planning</h2>
+            <input type="number" id="budgetInput" placeholder="Enter Your Budget" oninput="updateRemainingBudget()">
+            <p>Total Cost: <span id="totalCost">0</span></p>
+            <p>Remaining Budget: <span id="remainingBudget" class="highlight">0</span></p>
+        </div>
+
+        <!-- Create List Section -->
+        <div class="create-list">
+            <h2>Create a New List</h2>
+            <input type="text" id="listName" placeholder="Enter List Name">
+            <button id="createListButton">Create List</button>
+        </div>
+
+        <!-- Manage Lists Section -->
+        <div class="manage-lists">
+            <h2>Manage Your Lists</h2>
+            <ul id="listContainer"></ul>
+        </div>
+
+        <!-- Add Items Section -->
+        <div class="add-item">
+            <h2>Add Items to the List</h2>
+            <input type="text" id="searchItemInput" placeholder="Search for Items">
+            <div id="suggestions" style="margin-top: 10px;"></div>
+            <p id="itemCategory"></p>
+            <button id="addItemButton">Add Item</button>
+            <select id="listSelector">
+                <option value="">Select a List</option>
+            </select>
+        </div>
+
+        <!-- Toggle Recommendations -->
+        <div class="recommendation-toggle">
+            <input type="checkbox" id="recommendations-toggle">
+            <span>Enable Personalized Recommendations</span>
+        </div>
+
+        <div class="recommendations" id="recommendations-section" style="display: none;">
+            <h3>Recommended Products:</h3>
+            <ul id="recommendation-list"></ul>
+        </div>
+
+        <!-- Map Section -->
+        <div id="map"></div>
+
+        <!-- Walkthrough Modal -->
+        <div id="walkthroughModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeWalkthrough()">&times;</span>
+                <h2>Welcome to Manage Your Lists with Budget!</h2>
+                <p><strong>Step 1:</strong> Enter your <span class="highlight">Budget</span> to get started.</p>
+                <p><strong>Step 2:</strong> Create a new <span class="highlight">List</span> by entering its name.</p>
+                <p><strong>Step 3:</strong> Select a list and add items with the <span class="highlight">Add Item</span> section.</p>
+                <p><strong>Step 4:</strong> Enable <span class="highlight">Personalized Recommendations</span> to get product suggestions.</p>
+                <p><strong>Step 5:</strong> Use the <span class="highlight">Map</span> to locate nearby stores or products.</p>
+                <button onclick="closeWalkthrough()">Got it!</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Smart Grocery. All rights reserved.</p>
+    </footer>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="javascript.js"></script>
+
+    <script>
+        // Show Walkthrough Modal on Page Load
+        window.onload = function() {
+            // Show the walkthrough modal on load
+            const walkthroughModal = document.getElementById('walkthroughModal');
+            walkthroughModal.style.display = "block"; // Show modal
+
+            // Initialize the map
+            const map = L.map('map').setView([51.505, -0.09], 13); // Set initial position and zoom level
+
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add a marker at the initial location
+            L.marker([51.505, -0.09]).addTo(map)
+                .bindPopup("A marker at this location!")
+                .openPopup();
+        };
+
+        // Function to close the walkthrough modal
+        function closeWalkthrough() {
+            const walkthroughModal = document.getElementById('walkthroughModal');
+            walkthroughModal.style.display = "none"; // Hide modal
+        }
+
+        // Budget Management Functionality
+        function updateRemainingBudget() {
+            const budgetInput = document.getElementById('budgetInput').value;
+            const remainingBudgetElement = document.getElementById('remainingBudget');
+
+            // Calculate the remaining budget (assuming no items are added yet)
+            const remainingBudget = budgetInput; // Here you can calculate remaining based on costs or other logic
+            remainingBudgetElement.textContent = remainingBudget;
+
+            // Optionally update total cost if required
+            const totalCostElement = document.getElementById('totalCost');
+            totalCostElement.textContent = 0; // You can update this as items are added
+        }
+
+        // Logout functionality
+        function logout() {
+            // Remove login status from localStorage
+            localStorage.removeItem("loggedIn");
+
+            // Hide the logout button and show the register button
+            document.getElementById('logout-btn').style.display = 'none';
+            document.getElementById('register').style.display = 'inline';
+
+            // Optionally, redirect the user to the home page after logging out
+            window.location.href = "index.html"; // Redirect to home page
+        }
+        function navigateToView(){
+            window.location.href="view.html";
+        }
+        function navigateToHome(){
+            window.location.href="index.html";
+        }
+
+        function navigateToContact(){
+            window.location.href="contact.html";
+        }
+
+        function navigateToRegisterform(){
+            window.location.href="register.html";   
+        }
+        function navigateToMore(){
+            window.location.href="more.html";
+        }
+        function navigateToReward(){
+            window.location.href="reward.html";
+        }
+    </script>
+</body>
+</html>

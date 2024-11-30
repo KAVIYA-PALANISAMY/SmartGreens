@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align form at the top */
+            min-height: 100vh;
+            overflow-y: auto; /* Allow scrolling */
+            background-size: cover;
+    background-position: center;
+    background-attachment: fixed; 
+            background-image: url("https://www.mentoringcomplete.com/wp-content/uploads/2023/04/Your-paragraph-text-22-1-1110x740.png");
+        }
+
+        .feedback-form-container {
+            background-color: #ffffff;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            margin: 20px 0; /* Add margin to prevent sticking to the top */
+        }
+
+        h1 {
+            color: #333333;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            color: #555555;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            margin-top: 5px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .submit-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .box {
+            width: 60%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .box h1 {
+            color: #28a745;
+            font-size: 24px;
+            margin: 0;
+            text-align: center;
+        }
+
+        .box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Styling for the Popup */
+        .popup {
+            display: none;  /* Initially hidden */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+            width: 80%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup-content h2 {
+            margin: 0 0 10px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .popup-content p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .close-popup {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .close-popup:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .close-popup:active {
+            background-color: #388e3c;
+            transform: scale(0.98);
+        }
+        .box1 {
+    margin-left: 150px;
+    margin-right: 300px;
+    padding: 10px 150px;  /* Increase the horizontal padding for more width */
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    background: linear-gradient(45deg, #e6ece6, #16d05d);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: auto; /* Adjust width as needed */
+    display: inline-block; /* Make sure it adjusts width based on padding */
+}
+
+.box1:hover {
+    background: linear-gradient(45deg, #16d05d, #6abd5f);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.box1:focus {
+    outline: none;
+}
+
+.box1 span {
+    color: white;
+    position: relative;
+    z-index: 2;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="feedback-form-container">
+       <h1><button class="box1" onclick="navigateToMore()">Back</button></h1>
+        <h1>Smart Grocery Shop Online - Feedback</h1>
+        <p>Your feedback helps us improve! Please take a moment to share your thoughts.</p>
+        <form id="feedbackForm" onsubmit="return showThankYouPopup(event)">
+            <!-- User Information -->
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <!-- Rating Section -->
+            <label for="rating">Rate Your Overall Experience:</label>
+            <select id="rating" name="rating" required>
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Average">Average</option>
+                <option value="Poor">Poor</option>
+            </select>
+
+            <!-- Suggestions -->
+            <label for="features">Which features did you like the most?</label>
+            <textarea id="features" name="features" rows="4" placeholder="E.g., product variety, delivery speed, user interface, etc."></textarea>
+
+            <label for="improvement">What can we improve?</label>
+            <textarea id="improvement" name="improvement" rows="4" placeholder="E.g., new features, better pricing, easier navigation, etc." required></textarea>
+
+            <!-- Recommendation -->
+            <label for="recommend">Would you recommend us to others?</label>
+            <div>
+                <input type="radio" id="recommend-yes" name="recommend" value="Yes" required>
+                <label for="recommend-yes">Yes</label>
+                <input type="radio" id="recommend-no" name="recommend" value="No">
+                <label for="recommend-no">No</label>
+            </div>
+
+            <!-- Additional Feedback -->
+            <label for="additional-feedback">Any additional feedback?</label>
+            <textarea id="additional-feedback" name="additional_feedback" rows="4" placeholder="Share anything else you’d like us to know."></textarea>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-button">Submit Feedback</button>
+        </form>
+    </div>
+
+    <!-- Popup Section -->
+    <div id="thankYouPopup" class="popup">
+        <div class="popup-content">
+            <h2>Thank You!</h2>
+            <p>Your feedback has been submitted successfully.</p>
+            <button class="close-popup" onclick="redirectToHome()">Go to Home</button>
+        </div>
+    </div>
+
+    <script>
+        function navigateToMore(){
+            window.location.href = "more.html";
+        }
+
+        function showThankYouPopup(event) {
+            event.preventDefault();  // Prevent the form from submitting immediately
+
+            // Show the popup
+            document.getElementById("thankYouPopup").style.display = "flex";
+
+            // Optionally, simulate form submission (you can use AJAX if needed)
+            setTimeout(function() {
+                // Redirect to home page after 3 seconds
+                redirectToHome();
+            }, 3000);
+
+            return false;  // Prevent form submission to allow popup display
+        }
+
+        function redirectToHome() {
+            window.location.href = "index.html";  // Replace with your actual home page link
+        }
+    </script>
+</body>
+</html>
